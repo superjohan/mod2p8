@@ -7,7 +7,6 @@ import sys
 
 from collections import namedtuple
 
-
 ModChannelRow = namedtuple('ModChannelRow', ['period', 'sample', 'effect', 'effect_value'])
 ModPatternRow = namedtuple('ModPatternRow', ['channel_rows'])
 ModPattern = namedtuple('ModPattern', ['rows'])
@@ -15,7 +14,6 @@ ModSong = namedtuple('ModSong', ['patterns'])
 
 
 def parse_mod_channel_rows(mod_bytes, pattern_index, row_index):
-
     channel_rows = []
 
     for channel_index in range(0, 4):
@@ -33,7 +31,6 @@ def parse_mod_channel_rows(mod_bytes, pattern_index, row_index):
 
 
 def parse_pattern_rows(mod_bytes, pattern_index):
-
     rows = []
 
     for row_index in range(0, 64):
@@ -43,7 +40,6 @@ def parse_pattern_rows(mod_bytes, pattern_index):
 
 
 def parse_patterns(mod_bytes, max_pattern):
-
     patterns = []
 
     for pattern_index in range(0, max_pattern):
@@ -53,7 +49,6 @@ def parse_patterns(mod_bytes, max_pattern):
 
 
 def parse_mod(input_mod):
-
     with open(input_mod, mode='rb') as file:
         mod_bytes = file.read()
 
@@ -80,7 +75,6 @@ def parse_mod(input_mod):
 @click.argument('output_p8')
 @click.option('--debug', is_flag=True)
 def convert(input_mod, output_p8, debug):
-
     mod = parse_mod(input_mod)
 
     if debug:
@@ -88,5 +82,4 @@ def convert(input_mod, output_p8, debug):
 
 
 if __name__ == "__main__":
-
     convert()
