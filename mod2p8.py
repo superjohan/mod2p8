@@ -78,9 +78,13 @@ def parse_mod(input_mod):
 @click.command()
 @click.argument('input_mod')
 @click.argument('output_p8')
-def convert(input_mod, output_p8):
+@click.option('--debug', is_flag=True)
+def convert(input_mod, output_p8, debug):
 
     mod = parse_mod(input_mod)
+
+    if debug:
+        print('{}'.format(mod))
 
 
 if __name__ == "__main__":
