@@ -15,10 +15,15 @@ ModSong = namedtuple('ModSong', ['patterns'])
 
 def parse_mod_channel_rows(mod_bytes, pattern_index, row_index):
     channel_rows = []
+    channel_count = 4
+    patterns_start = 1084
+    pattern_length = 1024
+    row_length = 16
+    channel_length = 4
 
-    for channel_index in range(0, 4):
-        index = 1084 + (pattern_index * 1024) + (row_index * 16) + (channel_index * 4)
-        channel_row_bytes = struct.unpack('BBBB', mod_bytes[index:index + 4])
+    for channel_index in range(0, channel_count):
+        index = patterns_start + (pattern_index * pattern_length) + (row_index * row_length) + (channel_index * channel_length)
+        channel_row_bytes = struct.unpack('BBBB', mod_bytes[index:index + channel_length])
         sample = (channel_row_bytes[0] & 0xf0) + ((channel_row_bytes[2] & 0xf0) >> 4)
         period = ((channel_row_bytes[0] & 0xf) << 8) + channel_row_bytes[1]
         effect = channel_row_bytes[2] & 0xf
@@ -32,8 +37,9 @@ def parse_mod_channel_rows(mod_bytes, pattern_index, row_index):
 
 def parse_pattern_rows(mod_bytes, pattern_index):
     rows = []
+    pattern_length = 64
 
-    for row_index in range(0, 64):
+    for row_index in range(0, pattern_length):
         rows.append(parse_mod_channel_rows(mod_bytes, pattern_index, row_index))
 
     return ModPattern(rows)
@@ -52,14 +58,24 @@ def parse_mod(input_mod):
     with open(input_mod, mode='rb') as file:
         mod_bytes = file.read()
 
-    mk_header = struct.unpack('4s', mod_bytes[1080:1084])[0].decode('ascii')
+    mk_header_start = 1080
+    mk_header_length = 4
+    mk_header = struct.unpack('4s', mod_bytes[mk_header_start:mk_header_start + mk_header_length])[0].decode('ascii')
 
     if mk_header != 'M.K.':
         sys.exit('not a valid mod file')
 
-    mod_title = struct.unpack('20s', mod_bytes[0:20])[0].decode('ascii')
-    position_count = struct.unpack('B', mod_bytes[950:951])[0]
-    positions = struct.unpack('B' * position_count, mod_bytes[952:952 + position_count])
+    title_start = 0
+    title_length = 20
+    mod_title = struct.unpack('20s', mod_bytes[title_start:title_length])[0].decode('ascii')
+
+    position_start = 950
+    position_length = 1
+    position_count = struct.unpack('B', mod_bytes[position_start:position_start + position_length])[0]
+
+    positions_start = 952
+    positions = struct.unpack('B' * position_count, mod_bytes[positions_start:positions_start + position_count])
+
     max_pattern = max(positions)
 
     print('title: {}'.format(mod_title))
