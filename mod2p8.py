@@ -16,6 +16,14 @@ def parse_mod(input_mod):
     if mk_header != 'M.K.':
         sys.exit('not a valid mod file')
 
+    mod_title = struct.unpack('20s', mod_bytes[0:20])[0].decode('ascii')
+    position_count = struct.unpack('B', mod_bytes[950:951])[0]
+    positions = struct.unpack('B' * position_count, mod_bytes[952:952 + position_count])
+
+    print('title: {}'.format(mod_title))
+    print('position count: {}'.format(position_count))
+    print('positions: {}'.format(positions))
+
 
 @click.command()
 @click.argument('input_mod')
