@@ -45,6 +45,7 @@ def convert(input_mod, output_p8):
 
     parse_mod(input_mod)
 
+
 if __name__ == "__main__":
 
     convert()
