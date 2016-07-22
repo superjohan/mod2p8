@@ -14,7 +14,7 @@ ModPattern = namedtuple('ModPattern', ['rows'])
 ModSong = namedtuple('ModSong', ['patterns'])
 
 
-def parse_mod_channel_rows(mod_bytes, max_pattern, pattern_index, row_index):
+def parse_mod_channel_rows(mod_bytes, pattern_index, row_index):
 
     channel_rows = []
 
@@ -32,12 +32,12 @@ def parse_mod_channel_rows(mod_bytes, max_pattern, pattern_index, row_index):
     return ModPatternRow(channel_rows)
 
 
-def parse_pattern_rows(mod_bytes, max_pattern, pattern_index):
+def parse_pattern_rows(mod_bytes, pattern_index):
 
     rows = []
 
     for row_index in range(0, 64):
-        rows.append(parse_mod_channel_rows(mod_bytes, max_pattern, pattern_index, row_index))
+        rows.append(parse_mod_channel_rows(mod_bytes, pattern_index, row_index))
 
     return ModPattern(rows)
 
@@ -47,7 +47,7 @@ def parse_patterns(mod_bytes, max_pattern):
     patterns = []
 
     for pattern_index in range(0, max_pattern):
-        patterns.append(parse_pattern_rows(mod_bytes, max_pattern, pattern_index))
+        patterns.append(parse_pattern_rows(mod_bytes, pattern_index))
 
     return ModSong(patterns)
 
